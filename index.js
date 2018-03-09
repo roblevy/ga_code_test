@@ -2,9 +2,10 @@ const sqlite = require('sqlite'),
       Sequelize = require('sequelize'),
       request = require('request'),
       express = require('express'),
-      app = express();
-
-const { PORT=3000, NODE_ENV='development', DB_PATH='./db/database.db' } = process.env;
+      app = express(),
+      index = require('./routes/index');
+      films = require('./routes/films');
+const { PORT=3001, NODE_ENV='development', DB_PATH='./db/database.db' } = process.env;
 
 // START SERVER
 Promise.resolve()
@@ -12,11 +13,7 @@ Promise.resolve()
   .catch((err) => { if (NODE_ENV === 'development') console.error(err.stack); });
 
 // ROUTES
-app.get('/films/:id/recommendations', getFilmRecommendations);
-
-// ROUTE HANDLER
-function getFilmRecommendations(req, res) {
-  res.status(500).send('Not Implemented');
-}
+app.use('/', index);
+app.use('/films', films);
 
 module.exports = app;
