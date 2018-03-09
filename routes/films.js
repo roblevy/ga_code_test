@@ -6,17 +6,23 @@ router.get('/:id/recommendations', getFilmRecommendations);
 
 function getFilmRecommendations(req, res, next) {
   var id = req.params.id;
-  console.log(id);
-  models.Films.findOne({
-    attributes: ['title'],
+  models.Film.findOne({
+    attributes: ['genre_id'],
     where: {
         id: id
     }
-  }).then(film => {
-    //var message = film.get({plain: true}).title;
-    message = film;
-    res.status(200).json(message);
+  }).then(parentFilm => {
+      var genre_id = parentFilm.get({plain: true}).genre_id;
+      console.log(parentFilm);
+      models.Film.findAll({
+        attributes: ['id', 'title', 'releaseDate'],
+        where: {
+          genre_id: genre_id
+        }
+      }).then(childFilms => {
+          res.status(200).json(childFilms);
+      })
   });
-}
+};
 
 module.exports = router;
